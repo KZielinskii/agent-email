@@ -10,7 +10,8 @@ export default function Desktop() {
     senderEmail: '',
     senderPassword: '',
     recipientEmail: '',
-    emailTopic: ''
+    emailTopic: '',
+    emailSubject: ''
   });
 
   const [preview, setPreview] = useState('');
@@ -59,6 +60,11 @@ export default function Desktop() {
       return;
     }
 
+    if (!formData.emailSubject) {
+      alert('Proszę podać temat wiadomości');
+      return;
+    }
+
     try {
       const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.MAIL), {
         method: 'POST',
@@ -72,7 +78,7 @@ export default function Desktop() {
           recipientEmail: formData.recipientEmail,
           host: formData.host,
           emailContent: preview,
-          subject: formData.emailTopic
+          subject: formData.emailSubject
         })
       });
 
@@ -130,18 +136,31 @@ export default function Desktop() {
             value={formData.recipientEmail}
             onChange={handleInputChange('recipientEmail')}
           />
-          <TextField 
-            label="O czym ma być mail?" 
-            placeholder="Opisz temat wiadomości" 
-            value={formData.emailTopic}
-            onChange={handleInputChange('emailTopic')}
-          />
-          <Button onClick={handleGenerate}>Generuj</Button>
+           <TextField 
+             label="Temat" 
+             placeholder="Temat wiadomości" 
+             value={formData.emailSubject}
+             onChange={handleInputChange('emailSubject')}
+           />
+           <TextField 
+             label="O czym ma być mail?" 
+             placeholder="Opisz temat wiadomości" 
+             value={formData.emailTopic}
+             onChange={handleInputChange('emailTopic')}
+           />
+           <Button onClick={handleGenerate}>Generuj</Button>
         </section>
 
         <aside className="panel view">
           <div className="panel-title">Podgląd</div>
           <TextField 
+            label="Temat wiadomości"
+            placeholder="Temat wiadomości" 
+            value={formData.emailSubject}
+            onChange={handleInputChange('emailSubject')}
+          />
+          <TextField 
+            label="Treść wiadomości"
             multiline 
             value={preview}
             onChange={(e) => setPreview(e.target.value)}

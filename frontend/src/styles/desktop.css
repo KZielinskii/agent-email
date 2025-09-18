@@ -1,0 +1,161 @@
+/* Colors from Figma */
+:root {
+  --bg: #21252E;
+  --panel: #272A34;
+  --text: #FFFFFF;
+  --button: #3963A1;
+  --stroke: #717171;
+  --input-bg: #1f222b;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+
+.desktop-root {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 20px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.desktop-title {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.desktop-main {
+  background: var(--panel);
+  border: 1px solid #000;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  min-height: 600px;
+}
+
+.panel { 
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel.settings { 
+  border-right: 1px solid #21252E;
+}
+
+.panel.form { 
+  border-right: 1px solid #21252E;
+}
+
+.panel-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.panel.form .panel-title {
+  text-align: center;
+}
+
+/* TextField */
+.tf-root { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+}
+
+.tf-label { 
+  font-size: 14px; 
+  opacity: 0.9; 
+  font-weight: 500;
+}
+
+.tf-field { 
+  border: 1px solid var(--stroke); 
+  border-radius: 8px; 
+  overflow: hidden; 
+  background: var(--input-bg); 
+}
+
+.tf-input { 
+  width: 100%; 
+  padding: 12px 14px; 
+  color: var(--text); 
+  background: transparent; 
+  border: none; 
+  outline: none; 
+  resize: vertical; 
+  min-height: 44px;
+  font-size: 14px;
+}
+
+.tf-input::placeholder {
+  color: #888;
+}
+
+/* Button */
+.btn-root {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: var(--button);
+  border: 1px solid var(--stroke);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-root:hover { 
+  filter: brightness(1.05); 
+  transform: translateY(-1px);
+}
+
+.btn-root:active { 
+  filter: brightness(0.95); 
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .desktop-main {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .panel {
+    border-right: none;
+    border-bottom: 1px solid #21252E;
+  }
+  
+  .panel:last-child {
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-root {
+    padding: 10px;
+  }
+  
+  .desktop-title {
+    font-size: 36px;
+  }
+  
+  .panel {
+    padding: 20px;
+  }
+}
+
+

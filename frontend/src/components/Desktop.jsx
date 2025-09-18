@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TextField from './TextField';
 import Button from './Button';
+import { getApiUrl, API_CONFIG } from '../config/api';
 
 export default function Desktop() {
   const [formData, setFormData] = useState({
@@ -18,18 +19,73 @@ export default function Desktop() {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
   };
 
-  const handleGenerate = () => {
-    const emailPreview = `Od: ${formData.senderEmail}
-Do: ${formData.recipientEmail}
-Temat: ${formData.emailTopic}
+  const handleGenerate = async () => {
+    if (!formData.openaiApiKey || !formData.emailTopic) {
+      alert('Proszę wypełnić klucz API i temat wiadomości');
+      return;
+    }
 
-Treść wiadomości zostanie wygenerowana przez AI...`;
-    setPreview(emailPreview);
-    alert('Email został wygenerowany!');
+    try {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.MAIL), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'generate',
+          openaiApiKey: formData.openaiApiKey,
+          emailTopic: formData.emailTopic,
+          senderEmail: formData.senderEmail,
+          recipientEmail: formData.recipientEmail
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setPreview(data.content);
+        alert('Email został wygenerowany pomyślnie!');
+      } else {
+        alert('Błąd: ' + data.error);
+      }
+    } catch (error) {
+      alert('Błąd połączenia: ' + error.message);
+    }
   };
 
-  const handleSend = () => {
-    alert('Email został wysłany!');
+  const handleSend = async () => {
+    if (!formData.senderEmail || !formData.senderPassword || !formData.recipientEmail || !preview) {
+      alert('Proszę wypełnić wszystkie pola i wygenerować wiadomość');
+      return;
+    }
+
+    try {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.MAIL), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'send',
+          senderEmail: formData.senderEmail,
+          senderPassword: formData.senderPassword,
+          recipientEmail: formData.recipientEmail,
+          host: formData.host,
+          emailContent: preview,
+          subject: formData.emailTopic
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('Email został wysłany pomyślnie!');
+      } else {
+        alert('Błąd wysyłania: ' + data.error);
+      }
+    } catch (error) {
+      alert('Błąd połączenia: ' + error.message);
+    }
   };
 
   return (

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Backend API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>AI Mail Agent - Backend Test</h1>
+    
+    <div class="test-section">
+        <h3>Test 1: Check Backend Connection</h3>
+        <button onclick="testConnection()">Test Connection</button>
+        <div id="connection-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 2: Generate Email (Mock)</h3>
+        <button onclick="testGenerate()">Test Generate</button>
+        <div id="generate-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 3: Send Email (Mock)</h3>
+        <button onclick="testSend()">Test Send</button>
+        <div id="send-result" class="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000/mail.php';
+        
+        async function testConnection() {
+            const resultDiv = document.getElementById('connection-result');
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'test' })
+                });
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = '<div class="success">✅ Backend is running and accessible!</div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ Backend responded with error: ' + response.status + '</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">❌ Connection failed: ' + error.message + '</div>';
+            }
+        }
+        
+        async function testGenerate() {
+            const resultDiv = document.getElementById('generate-result');
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'generate',
+                        openaiApiKey: 'test-key',
+                        emailTopic: 'Test email topic',
+                        senderEmail: 'test@example.com',
+                        recipientEmail: 'recipient@example.com'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = '<div class="success">✅ Generate test successful!<br>Content: ' + data.content.substring(0, 100) + '...</div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ Generate failed: ' + data.error + '</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">❌ Generate test failed: ' + error.message + '</div>';
+            }
+        }
+        
+        async function testSend() {
+            const resultDiv = document.getElementById('send-result');
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'send',
+                        senderEmail: 'test@example.com',
+                        senderPassword: 'test-password',
+                        recipientEmail: 'recipient@example.com',
+                        host: 'smtp.gmail.com',
+                        emailContent: 'Test email content',
+                        subject: 'Test Subject'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = '<div class="success">✅ Send test successful!</div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ Send failed: ' + data.error + '</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">❌ Send test failed: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>
